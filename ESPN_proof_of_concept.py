@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
 
+TEAMNAMES = 1
 league_id = '60261358'
 espn_cookies = {
     "swid": "{98A29BD7-C472-40E5-83BA-2EB349C3A05B}",
@@ -51,28 +52,77 @@ def make_final_df(season_id):
         5: 'K',
         16: 'DST'
     }
-    team_mapping = {
+
+    team_mapping2020 = {
+        1: 'The pimps Named slickback',
+        2: 'Dalvin\'s Sous-Chefs',
+        3: 'Antonio\'s Helmet',
+        4: 'Prkrville Prius',
+        5: 'Team Legend',
+        6: 'Team McWhinney',
+        7: 'The Gene Warrens',
+        9: 'Arlington VA Romans',
+        10: 'Jeb! 2020',
+        11: 'Montgomery\'s Fall',
+    }
+
+    team_mapping2021 = {
+        1: 'Marquise Brown',
+        2: 'Central Arl Swag',
+        3: 'Antonio\'s Helmet',
+        4: 'Prkrville Prius',
+        5: 'NaJeep Wrangler',
+        6: 'Team McWhinney',
         7: 'North Maryland Fat Nuts',
+        10: 'Jeb! 2024',
+        11: 'no scam plz',
+        12: 'South Arlington Blokes',
+        13: 'Kang Gang',
+        14: 'Team Christiansen',
+    }
+
+    team_mapping2022 = {
+        
         1: 'Daniel Jones',
+        2: 'North Arlington Chaps',
+        3: 'Antonio\'s Cajones',
+        4: 'Northfield Nutjobs',
+        5: 'DooDoo Sh1t Poopster',
+        6: 'Saigon Noodles n Grill',
+        7: 'North Maryland Fat Nuts',
+        10: 'GO! BIRDS!',
         11: 'no scam plz',
         12: 'Juju Videos',
-        5: 'DooDoo Sh1t Poopster',
-        2: 'North Arlington Chaps',
-        6: 'Saigon Noodles n Grill',
-        4: 'Northfield Nutjobs',
-        10: 'GO! BIRDS!',
-        3: 'Antonio\'s Cajones',
+        13: 'Kang Gang',
         14: 'Team Christiansen',
-        13: 'Kang Gang'
     }
-    
-    merged_df['teamId'] = merged_df['teamId'].replace(team_mapping)
+
+    team_mapping_general = {
+        1: 'Liam Franchise',
+        2: 'Leo Franchise',
+        3: 'Ephraim Franchise',
+        4: 'Nathan Franchise',
+        5: 'Austin Franchise',
+        6: 'Taylor/Jack Franchise',
+        7: 'Cole Franchise',
+        9: 'Roman Franchise',
+        10: 'Toby Franchise',
+        11: 'Judah/Nick Franchise',
+        12: 'Joel Franchise',
+        13: 'Eli Franchise',
+        14: 'Tyler Franchise'
+    }
+    if TEAMNAMES == 1:
+        merged_df['teamId'] = merged_df['teamId'].replace(locals()[f'team_mapping{season_id}'])
+    else:
+        merged_df['teamId'] = merged_df['teamId'].replace(team_mapping_general)
     merged_df['defaultPositionId'] = merged_df['defaultPositionId'].replace(position_mapping)
     
     return merged_df[['overallPickNumber', 'fullName', 'defaultPositionId', 'team name', 'teamId']].sort_values(by='overallPickNumber')
 
-def get2022():
-    data_path = "\\Users\\leofa\\Documents\\VSCode\\2022rank.csv"
+def get_ranking(season_id):
+    import os
+    data_path = os.path.join("C:\\", "Users", "leofa", "Documents", "VSCode", "ESPN", f"{season_id}rank.csv")
     season_rankings_df = pd.read_csv(data_path)
     return season_rankings_df
 
@@ -89,11 +139,31 @@ def compare_draft_vs_season_end_by_position(draft_df, season_rankings_df):
     # Return the combined DataFrame containing draft position rank, end-of-season position rank, and their difference
     return combined_df.sort_values(by='RankDifference')
 
+def make_comparison(season_id):
+    twentydf = make_final_df(season_id)
+    season_rankings_df = get_ranking(season_id)
+    comparison_df = compare_draft_vs_season_end_by_position(twentydf, season_rankings_df)
+    return comparison_df
 
-twentydf = make_final_df("2022")
-season_rankings_df = get2022()
+def merge_finals(final0, final1):
+    merge_df = pd.concat([final0, final1], ignore_index=True)
+    merge_df = merge_df.sort_values(by='RankDifference',ascending=False)
+    merge_df.drop('Player', axis=1,inplace=True)
+    merge_df.drop('FantPos', axis=1,inplace=True)
+    return merge_df
 
-comparison_df = compare_draft_vs_season_end_by_position(twentydf, season_rankings_df)
+
+def espn(years):
+    #takes a list of years
+    final_df = make_comparison(years[0])
+    years = years[1:]
+    for year in years:
+        final_df = merge_finals(make_comparison(year),final_df)
+    return final_df
+
+def export_as_csv(filename):
+    to_export = espn([2020,2021,2022])
+    to_export.to_csv((filename + '.csv'))
 
 # Display settings and print dataframe
 pd.set_option('display.max_rows', None)
@@ -101,13 +171,9 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 2000)
 pd.set_option('display.max_colwidth', None)
 
-print(comparison_df)
+export_as_csv("draft_data2")
 
-# Display settings and print dataframe
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 2000)
-pd.set_option('display.max_colwidth', None)
+
 
 
 
