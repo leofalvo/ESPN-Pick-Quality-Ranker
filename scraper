@@ -1,11 +1,11 @@
 import pandas as pd
 import requests
 
-TEAMNAMES = 1
-league_id = '60261358'
+TEAMNAMES = 0
+league_id = '#YOUR ID'
 espn_cookies = {
-    "swid": "{98A29BD7-C472-40E5-83BA-2EB349C3A05B}",
-    "espn_s2": "AECTWdVGMsw89WGvGIbpbiOENUKF19pHZtKfBL3%2FkuZosKP6m83MNawQr1T1Sf5zs2oZSsftX4AvRGfBCoUGAMoiHILGHXnT%2BU%2F6cVruVIXczFie09hVdClV9ZzwYl4nMFo2Gs9GmhGlFZeuOKEdjbzHBIMKaB4Hgmr2862TBDLCAh5JkFI2Xjeo17Qa9cLVFBvTtbZ9HZgfeRP0HqAZ73ijZB%2Buvw1fczKdHeM1hdyHQOhB8MyNsiebrn105j1yn3qHw0gUwJ2DpVFD2Olp8rbVmC5Ny6EN64sI2KWSbXYLy8Sc%2FnrbqlM1p2K5c1qbnOU%3D"
+    "swid": "{#YOUR SWID}",
+    "espn_s2": "#YOUR Espn_S2"
 }
 
 def get_draft(season_id):
@@ -53,64 +53,21 @@ def make_final_df(season_id):
         16: 'DST'
     }
 
+# Team names can be added here.
     team_mapping2020 = {
-        1: 'The pimps Named slickback',
-        2: 'Dalvin\'s Sous-Chefs',
-        3: 'Antonio\'s Helmet',
-        4: 'Prkrville Prius',
-        5: 'Team Legend',
-        6: 'Team McWhinney',
-        7: 'The Gene Warrens',
-        9: 'Arlington VA Romans',
-        10: 'Jeb! 2020',
-        11: 'Montgomery\'s Fall',
+        
     }
 
     team_mapping2021 = {
-        1: 'Marquise Brown',
-        2: 'Central Arl Swag',
-        3: 'Antonio\'s Helmet',
-        4: 'Prkrville Prius',
-        5: 'NaJeep Wrangler',
-        6: 'Team McWhinney',
-        7: 'North Maryland Fat Nuts',
-        10: 'Jeb! 2024',
-        11: 'no scam plz',
-        12: 'South Arlington Blokes',
-        13: 'Kang Gang',
-        14: 'Team Christiansen',
+       
     }
 
     team_mapping2022 = {
-        
-        1: 'Daniel Jones',
-        2: 'North Arlington Chaps',
-        3: 'Antonio\'s Cajones',
-        4: 'Northfield Nutjobs',
-        5: 'DooDoo Sh1t Poopster',
-        6: 'Saigon Noodles n Grill',
-        7: 'North Maryland Fat Nuts',
-        10: 'GO! BIRDS!',
-        11: 'no scam plz',
-        12: 'Juju Videos',
-        13: 'Kang Gang',
-        14: 'Team Christiansen',
+    
     }
 
     team_mapping_general = {
-        1: 'Liam Franchise',
-        2: 'Leo Franchise',
-        3: 'Ephraim Franchise',
-        4: 'Nathan Franchise',
-        5: 'Austin Franchise',
-        6: 'Taylor/Jack Franchise',
-        7: 'Cole Franchise',
-        9: 'Roman Franchise',
-        10: 'Toby Franchise',
-        11: 'Judah/Nick Franchise',
-        12: 'Joel Franchise',
-        13: 'Eli Franchise',
-        14: 'Tyler Franchise'
+        
     }
     if TEAMNAMES == 1:
         merged_df['teamId'] = merged_df['teamId'].replace(locals()[f'team_mapping{season_id}'])
